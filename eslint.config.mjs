@@ -1,6 +1,6 @@
 import pluginJs from '@eslint/js';
 import eslintPluginPlaywright from 'eslint-plugin-playwright';
-import eslingPluginPrettierReccomended from 'eslint-plugin-prettier/recommended';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -35,5 +35,5 @@ export default [
       },
     },
   },
-  eslingPluginPrettierReccomended,
+  eslintPluginPrettierRecommended,
 ];
