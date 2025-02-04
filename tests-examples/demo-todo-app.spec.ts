@@ -1,4 +1,6 @@
-import { test, expect, type Page } from '@playwright/test';
+/* eslint-disable playwright/no-useless-not */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { JSHandle, type Page, expect, test } from '@playwright/test';
 
 test.beforeEach(async ({ page }) => {
   await page.goto('https://demo.playwright.dev/todomvc');
@@ -481,7 +483,10 @@ async function checkNumberOfCompletedTodosInLocalStorage(
   }, expected);
 }
 
-async function checkTodosInLocalStorage(page: Page, title: string) {
+async function checkTodosInLocalStorage(
+  page: Page,
+  title: string,
+): Promise<JSHandle> {
   return await page.waitForFunction((t) => {
     return (
       JSON.parse(localStorage['react-todos'])
