@@ -1,1 +1,2 @@
-npx run lint
+npx eslint . --max-warnings 0
+npx prettier --write .
