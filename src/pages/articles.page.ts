@@ -1,7 +1,7 @@
 import { Page } from '@playwright/test';
 
 export class ArticlesPage {
-  url = 'articles.html';
+  url = 'http://localhost:3000/articles.html';
   constructor(private page: Page) {}
   async goto(): Promise<void> {
     await this.page.goto(this.url);
