@@ -4,24 +4,20 @@ import { testUser1 } from '../../src/test-data/user.data';
 import test, { expect } from '@playwright/test';
 
 test.describe('Verify login', () => {
-  test(
-    'login with correct credentials',
-    { tag: '@GAD_R02_01' },
-    async ({ page }) => {
-      //arrange
-      const userEmail = testUser1.userEmail;
-      const userPassword = 'test1';
-      const loginPage = new LoginPage(page);
-      await loginPage.goto();
+  test('login with correct credentials @GAD-R02-01', async ({ page }) => {
+    // Arrange
+    const userEmail = testUser1.userEmail;
+    const userPassword = 'test1';
+    const loginPage = new LoginPage(page);
 
-      //act
+    // Act
+    await loginPage.goto();
+    await loginPage.login(userEmail, userPassword);
 
-      await loginPage.login(userEmail, userPassword);
-      const welcomePage = new WelcomePage(page);
-      const title = await welcomePage.title();
+    const welcomePage = new WelcomePage(page);
+    const title = await welcomePage.title();
 
-      //assert
-      expect(title).toContain('Welcome');
-    },
-  );
+    // Assert
+    expect(title).toContain('Welcome');
+  });
 });

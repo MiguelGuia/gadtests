@@ -4,45 +4,44 @@ import { HomePage } from '../../src/pages/home.page';
 import { expect, test } from '@playwright/test';
 
 test.describe('Verify service main pages', () => {
-  test('home page title', { tag: '@GAD-R01-01' }, async ({ page }) => {
-    //arrange
+  test('home page title @GAD-R01-01', async ({ page }) => {
+    // Arrange
     const homePage = new HomePage(page);
 
-    // act
+    // Act
     await homePage.goto();
 
-    //assert
+    // Assert
     const title = await homePage.title();
     expect(title).toContain('GAD');
   });
 
-  test('articles page title', { tag: '@GAD-R01-02' }, async ({ page }) => {
-    //arrange
+  test('articles page title @GAD-R01-02', async ({ page }) => {
+    // Arrange
     const articlesPage = new ArticlesPage(page);
 
-    // act
+    // Act
     await articlesPage.goto();
 
-    //assert
+    // Assert
     const title = await articlesPage.title();
     expect(title).toContain('Articles');
   });
 
-  test('comments page title', { tag: '@GAD-R01-03' }, async ({ page }) => {
-    //arrange
+  test('comments page title @GAD-R01-02', async ({ page }) => {
+    // Arrange
     const commentsPage = new CommentsPage(page);
 
-    // act
+    // Act
     await commentsPage.goto();
 
-    //assert
+    // Assert
     const title = await commentsPage.title();
     expect(title).toContain('Comments');
   });
+
   test('home page title simple', async ({ page }) => {
-    //act
-    await page.goto('http://localhost:3000');
-    // assert
+    await page.goto('');
     await expect(page).toHaveTitle(/GAD/);
   });
 });
