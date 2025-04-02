@@ -41,8 +41,8 @@ test.describe('Verify login', () => {
       //Assert
       await expect
         .soft(loginPage.loginError)
-        .toHaveText('Invalid email or password');
-      expect.soft(title).toContain('Login');
+        .toHaveText('Invalid username or password');
+      expect.soft(title).toContain('username');
     },
   );
 });

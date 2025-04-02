@@ -15,4 +15,7 @@ export class BasePage {
     await this.page.waitForLoadState();
     return this.page.title();
   }
+  async waitforPageToLoadUrl(): Promise<void> {
+    await this.page.waitForURL(this.url);
+  }
 }
