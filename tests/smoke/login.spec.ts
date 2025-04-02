@@ -32,7 +32,6 @@ test.describe('Verify login', () => {
       const userEmail = testUser1.userEmail;
       const userPassword = 'wrong-password';
       const loginPage = new LoginPage(page);
-      const title = await loginPage.title();
 
       //Act
       await loginPage.goto();
@@ -42,7 +41,7 @@ test.describe('Verify login', () => {
       await expect
         .soft(loginPage.loginError)
         .toHaveText('Invalid username or password');
-      expect.soft(title).toContain('username');
+      await expect.soft(loginPage.loginError).toHaveText(/username/);
     },
   );
 });
