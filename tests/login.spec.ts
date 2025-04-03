@@ -1,6 +1,7 @@
-import { LoginPage } from '../../src/pages/login.page';
-import { WelcomePage } from '../../src/pages/welcome.page';
-import { testUser1 } from '../../src/test-data/user.data';
+import { LoginUser } from '../src/models/user.models';
+import { LoginPage } from '../src/pages/login.page';
+import { WelcomePage } from '../src/pages/welcome.page';
+import { testUser1 } from '../src/test-data/user.data';
 import test, { expect } from '@playwright/test';
 
 test.describe('Verify login', () => {
@@ -8,14 +9,16 @@ test.describe('Verify login', () => {
     'login with correct credentials',
     { tag: '@GAD-R02-01' },
     async ({ page }) => {
-      // Arrange
-      const userEmail = testUser1.userEmail;
-      const userPassword = testUser1.userPassword;
       const loginPage = new LoginPage(page);
+
+      const loginUserData: LoginUser = {
+        userEmail: testUser1.userEmail,
+        userPassword: testUser1.userPassword,
+      };
 
       // Act
       await loginPage.goto();
-      await loginPage.login(userEmail, userPassword);
+      await loginPage.loginNew(loginUserData);
 
       const welcomePage = new WelcomePage(page);
       const title = await welcomePage.title();
@@ -30,7 +33,7 @@ test.describe('Verify login', () => {
     async ({ page }) => {
       //Arrange
       const userEmail = testUser1.userEmail;
-      const userPassword = 'wrong-password';
+      const userPassword = 'incorrectPassword';
       const loginPage = new LoginPage(page);
 
       //Act
@@ -41,7 +44,8 @@ test.describe('Verify login', () => {
       await expect
         .soft(loginPage.loginError)
         .toHaveText('Invalid username or password');
-      await expect.soft(loginPage.loginError).toHaveText(/username/);
+      const title = await loginPage.title();
+      await expect.soft(title).toContain('Login');
     },
   );
 });

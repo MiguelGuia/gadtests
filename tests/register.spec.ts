@@ -1,7 +1,7 @@
-import { RegisterUser } from '../../src/models/user.models';
-import { LoginPage } from '../../src/pages/login.page';
-import { RegisterPage } from '../../src/pages/register.page';
-import { WelcomePage } from '../../src/pages/welcome.page';
+import { RegisterUser } from '../src/models/user.models';
+import { LoginPage } from '../src/pages/login.page';
+import { RegisterPage } from '../src/pages/register.page';
+import { WelcomePage } from '../src/pages/welcome.page';
 import { faker } from '@faker-js/faker';
 import test, { expect } from '@playwright/test';
 
