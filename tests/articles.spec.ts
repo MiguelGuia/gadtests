@@ -15,7 +15,7 @@ test.describe('Verify articles', () => {
       const loginPage = new LoginPage(page);
       await loginPage.goto();
       await loginPage.login(testUser1);
-      //enter articles page
+
       const articlesPage = new ArticlesPage(page);
       await articlesPage.goto();
 
@@ -38,4 +38,44 @@ test.describe('Verify articles', () => {
         .toHaveText(articleData.body, { useInnerText: true });
     },
   );
+  test('reject creating article without body, {@GAD-R04-01}', async ({
+    page,
+  }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(testUser1);
+
+    const articlesPage = new ArticlesPage(page);
+    await articlesPage.goto();
+    const addArticleView = new AddArticleView(page);
+
+    await articlesPage.addArticleButtonLogged.click();
+
+    const addArticle = randomNewArticle();
+    await addArticleView.titleInput.fill(addArticle.title);
+    await addArticleView.saveButton.click();
+    await expect(addArticleView.errorPopUp).toHaveText(
+      'Article was not created',
+    );
+  });
+  test('reject creating article without title, {@GAD-R04-02}', async ({
+    page,
+  }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(testUser1);
+
+    const articlesPage = new ArticlesPage(page);
+    await articlesPage.goto();
+    const addArticleView = new AddArticleView(page);
+
+    await articlesPage.addArticleButtonLogged.click();
+
+    const addArticle = randomNewArticle();
+    await addArticleView.bodyInput.fill(addArticle.body);
+    await addArticleView.saveButton.click();
+    await expect(addArticleView.errorPopUp).toHaveText(
+      'Article was not created',
+    );
+  });
 });
