@@ -12,4 +12,7 @@ export class ArticlesPage extends BasePage {
     this.mainMenu = new MainMenuComponent(this.page);
     this.addArticleButtonLogged = this.page.locator('#add-new');
   }
+  async gotoArticle(title: string): Promise<void> {
+    await this.page.getByText(title).click();
+  }
 }
