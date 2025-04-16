@@ -7,7 +7,7 @@ export class AddArticleView extends BasePage {
   titleInput: Locator;
   bodyInput: Locator;
   saveButton: Locator;
-  errorPopUp: Locator;
+  alertPopUp: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -15,7 +15,7 @@ export class AddArticleView extends BasePage {
     this.titleInput = this.page.getByTestId('title-input');
     this.bodyInput = this.page.getByTestId('body-text');
     this.saveButton = this.page.getByTestId('save');
-    this.errorPopUp = this.page.getByTestId('alert-popup');
+    this.alertPopUp = this.page.getByTestId('alert-popup');
   }
   async createArticle(addArticle: AddArticle): Promise<void> {
     await this.titleInput.fill(addArticle.title);
