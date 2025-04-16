@@ -10,8 +10,6 @@ test.describe('Verify articles', () => {
   let loginPage: LoginPage;
   let articlesPage: ArticlesPage;
   let addArticleView: AddArticleView;
-  // eslint-disable-next-line prefer-const
-  let articleData = randomNewArticle();
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
@@ -26,6 +24,7 @@ test.describe('Verify articles', () => {
   test('create new article', { tag: '@GAD-R04-01' }, async ({ page }) => {
     //arrange
     const articlePage = new ArticlePage(page);
+    const articleData = randomNewArticle();
 
     // Act
     await addArticleView.createArticle(articleData);
@@ -38,8 +37,9 @@ test.describe('Verify articles', () => {
   });
   test('reject creating article without title, {@GAD-R04-01}', async () => {
     //arrange
-    articleData.title = '';
+    const articleData = randomNewArticle();
     const expectedErrorMessage = 'Article was not created';
+    articleData.title = '';
 
     // act
     await addArticleView.createArticle(articleData);
@@ -49,10 +49,22 @@ test.describe('Verify articles', () => {
   });
   test('reject creating article without body, {@GAD-R04-02}', async () => {
     //arrange
-    articleData.body = '';
+    const articleData = randomNewArticle();
     const expectedErrorMessage = 'Article was not created';
+    articleData.body = '';
 
     //act
+    await addArticleView.createArticle(articleData);
+
+    //assert
+    await expect(addArticleView.alertPopUp).toHaveText(expectedErrorMessage);
+  });
+  test('reject creating article with title exceeding 128 signs, {@GAD-R04-02}', async () => {
+    //arrange
+    const articleData = randomNewArticle(129);
+    const expectedErrorMessage = 'Article was not created';
+
+    // act
     await addArticleView.createArticle(articleData);
 
     //assert
