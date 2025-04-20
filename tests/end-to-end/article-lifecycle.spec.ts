@@ -1,4 +1,4 @@
-import { randomNewArticle } from '../../src/factories/article.factory';
+import { prepareRandomArticle } from '../../src/factories/article.factory';
 import { AddArticle } from '../../src/models/article.model';
 import { ArticlePage } from '../../src/pages/article.page';
 import { ArticlesPage } from '../../src/pages/articles.page';
@@ -29,7 +29,7 @@ test.describe('Create,verify and delete article', () => {
     //.serial
     //arrange
 
-    articleData = randomNewArticle();
+    articleData = prepareRandomArticle();
 
     // Act
     await articlesPage.addArticleButtonLogged.click();
