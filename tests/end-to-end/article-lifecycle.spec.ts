@@ -60,7 +60,7 @@ test.describe('Create,verify and delete article', () => {
     await articlePage.deleteIcon.click();
     //assert
     await articlesPage.waitforPageToLoadUrl();
-    const title = await articlesPage.title();
+    const title = await articlesPage.getTitle();
     expect(title).toContain('Articles');
 
     await articlesPage.searchArticle(articleData.title);
