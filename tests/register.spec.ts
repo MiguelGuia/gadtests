@@ -21,16 +21,17 @@ test.describe('Verify register', () => {
       // Arrange
       const loginPage = new LoginPage(page);
       const welcomePage = new WelcomePage(page);
+      const expectedWelcomeTitle = 'Login';
+      const expectedAlertPopupText = 'User created';
 
       //act
       await registerPage.register(registerUserData);
-      const expectedAlertPopupText = 'User created';
 
       //assert
       await expect(registerPage.alertPopUp).toHaveText(expectedAlertPopupText);
       await loginPage.waitforPageToLoadUrl();
       const titleLogin = await loginPage.getTitle();
-      expect.soft(titleLogin).toContain('Login');
+      expect.soft(titleLogin).toContain(expectedWelcomeTitle);
 
       // assert
       await loginPage.login({

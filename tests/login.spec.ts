@@ -10,6 +10,7 @@ test.describe('Verify login', () => {
     { tag: '@GAD-R02-01' },
     async ({ page }) => {
       //arrange
+      const expectedWelcomeTitle = 'Welcome';
       const loginPage = new LoginPage(page);
 
       // Act
@@ -20,7 +21,7 @@ test.describe('Verify login', () => {
       const title = await welcomePage.getTitle();
 
       // Assert
-      expect(title).toContain('Welcome');
+      expect(title).toContain(expectedWelcomeTitle);
     },
   );
   test(
@@ -34,6 +35,7 @@ test.describe('Verify login', () => {
         userPassword: 'incorrectPassword',
       };
 
+      const expectedLoginTitle = 'Login';
       const loginPage = new LoginPage(page);
 
       //Act
@@ -45,7 +47,7 @@ test.describe('Verify login', () => {
         .soft(loginPage.loginError)
         .toHaveText('Invalid username or password');
       const title = await loginPage.getTitle();
-      await expect.soft(title).toContain('Login');
+      await expect.soft(title).toContain(expectedLoginTitle);
     },
   );
 });
