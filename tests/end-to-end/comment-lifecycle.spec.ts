@@ -2,6 +2,7 @@ import { prepareRandomArticle } from '../../src/factories/article.factory';
 import { AddArticle } from '../../src/models/article.model';
 import { ArticlePage } from '../../src/pages/article.page';
 import { ArticlesPage } from '../../src/pages/articles.page';
+import { CommentPage } from '../../src/pages/comment.page';
 import { LoginPage } from '../../src/pages/login.page';
 import { testUser1 } from '../../src/test-data/user.data';
 import { AddArticleView } from '../../src/views/add-article.view';
@@ -15,6 +16,7 @@ test.describe('Create,verify and delete comment', () => {
   let articleData: AddArticle;
   let articlePage: ArticlePage;
   let addCommentView: AddCommentView;
+  let commentPage: CommentPage;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
@@ -23,6 +25,7 @@ test.describe('Create,verify and delete comment', () => {
     articlePage = new ArticlePage(page);
     articleData = prepareRandomArticle();
     addCommentView = new AddCommentView(page);
+    commentPage = new CommentPage(page);
 
     await loginPage.goto();
     await loginPage.login(testUser1);
@@ -30,7 +33,7 @@ test.describe('Create,verify and delete comment', () => {
     await articlesPage.addArticleButtonLogged.click();
     await addArticleView.createArticle(articleData);
   });
-  test('create new comment', { tag: '@GAD-R05-01' }, async () => {
+  test('create new comment', { tag: '@GAD-R05-01' }, async ({ page }) => {
     //Create new comment
 
     //arrange
@@ -42,11 +45,21 @@ test.describe('Create,verify and delete comment', () => {
     await expect(addCommentView.addNewHeader).toHaveText(
       expectedAddCommentHeader,
     );
+    const commentText = 'Hello!';
     await addCommentView.bodyInput.fill('Hello!');
     await addCommentView.saveButton.click();
 
     await expect(articlePage.alertPopup).toHaveText(
       expectedCommentCreatedPopup,
     );
+
+    //verify comment
+    const articleComment = articlePage.getArticleComment(commentText);
+
+    await expect(articleComment.body).toHaveText(commentText);
+    await articleComment.link.click();
+    //arrange
+
+    await expect(commentPage.commentBody).toHaveText(commentText);
   });
 });
