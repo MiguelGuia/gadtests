@@ -1,3 +1,4 @@
+import { AddCommentModel } from '../models/comment.model';
 import { BasePage } from '../pages/base.page';
 import { Locator, Page } from '@playwright/test';
 
@@ -15,5 +16,9 @@ export class AddCommentView extends BasePage {
       name: 'Save',
     });
     this.bodyInput = this.page.locator('#body');
+  }
+  async createComment(commentData: AddCommentModel): Promise<void> {
+    await this.bodyInput.fill(commentData.body);
+    await this.saveButton.click();
   }
 }
