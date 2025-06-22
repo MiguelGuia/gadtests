@@ -37,40 +37,55 @@ test.describe('Create,verify and delete comment', () => {
     await articlesPage.addArticleButtonLogged.click();
     await addArticleView.createArticle(articleData);
   });
-  test('create new comment', { tag: '@GAD-R05-01' }, async () => {
-    //Create new comment
-
+  test('operate on comments', { tag: '@GAD-R05-01' }, async () => {
     //arrange
-    const expectedAddCommentHeader = 'Add New Comment';
-    const expectedCommentCreatedPopup = 'Comment was created';
     const newCommentData = prepareRandomComment();
-    const expectedCommentEditedPopup = 'Comment was updated';
 
-    //act
-    await articlePage.addCommentButton.click();
-    await expect(addCommentView.addNewHeader).toHaveText(
-      expectedAddCommentHeader,
-    );
-    await addCommentView.createComment(newCommentData);
+    await test.step('create new comment', async () => {
+      //arrange
+      const expectedCommentCreatedPopup = 'Comment was created';
+      const expectedAddCommentHeader = 'Add New Comment';
+      //act
+      await articlePage.addCommentButton.click();
+      await expect
+        .soft(addCommentView.addNewHeader)
+        .toHaveText(expectedAddCommentHeader);
 
-    await expect(articlePage.alertPopup).toHaveText(
-      expectedCommentCreatedPopup,
-    );
+      await addCommentView.createComment(newCommentData);
+      //assert
+      await expect
+        .soft(articlePage.alertPopup)
+        .toHaveText(expectedCommentCreatedPopup);
+    });
 
-    //verify comment
-    const articleComment = articlePage.getArticleComment(newCommentData.body);
+    await test.step('verify comment', async () => {
+      const articleComment = articlePage.getArticleComment(newCommentData.body);
+      await expect(articleComment.body).toHaveText(newCommentData.body);
+      await articleComment.link.click();
 
-    await expect(articleComment.body).toHaveText(newCommentData.body);
-    await articleComment.link.click();
-    //arrange
+      await expect(commentPage.commentBody).toHaveText(newCommentData.body);
+    });
+
     const editCommentData = prepareRandomComment();
+    await test.step('update comment', async () => {
+      //arrange
+      const expectedCommentUpdatedPopup = 'Comment was updated';
 
-    await expect(commentPage.commentBody).toHaveText(newCommentData.body);
-    await commentPage.editButton.click();
-    await editCommentView.updateComment(editCommentData);
-    await expect(commentPage.commentBody).toHaveText(editCommentData.body);
-    await expect(commentPage.alertPopup).toHaveText(expectedCommentEditedPopup);
-
-    // await page.getByTestId('return').click();
+      //act
+      await commentPage.editButton.click();
+      await editCommentView.updateComment(editCommentData);
+      await expect
+        .soft(commentPage.alertPopup)
+        .toHaveText(expectedCommentUpdatedPopup);
+      await expect(commentPage.commentBody).toHaveText(editCommentData.body);
+    });
+    await test.step('verify updated comment', async () => {
+      //act
+      await commentPage.returnLink.click();
+      const updatedArticleComment = articlePage.getArticleComment(
+        editCommentData.body,
+      );
+      await expect(updatedArticleComment.body).toHaveText(editCommentData.body);
+    });
   });
 });
