@@ -1,4 +1,5 @@
 import { prepareRandomArticle } from '../../src/factories/article.factory';
+import { prepareRandomComment } from '../../src/factories/comment.factory';
 import { AddArticle } from '../../src/models/article.model';
 import { ArticlePage } from '../../src/pages/article.page';
 import { ArticlesPage } from '../../src/pages/articles.page';
@@ -33,20 +34,20 @@ test.describe('Create,verify and delete comment', () => {
     await articlesPage.addArticleButtonLogged.click();
     await addArticleView.createArticle(articleData);
   });
-  test('create new comment', { tag: '@GAD-R05-01' }, async ({ page }) => {
+  test('create new comment', { tag: '@GAD-R05-01' }, async () => {
     //Create new comment
 
     //arrange
     const expectedAddCommentHeader = 'Add New Comment';
     const expectedCommentCreatedPopup = 'Comment was created';
+    const newCommentData = prepareRandomComment();
 
     //act
     await articlePage.addCommentButton.click();
     await expect(addCommentView.addNewHeader).toHaveText(
       expectedAddCommentHeader,
     );
-    const commentText = 'Hello!';
-    await addCommentView.bodyInput.fill('Hello!');
+    await addCommentView.bodyInput.fill(newCommentData.body);
     await addCommentView.saveButton.click();
 
     await expect(articlePage.alertPopup).toHaveText(
@@ -54,12 +55,12 @@ test.describe('Create,verify and delete comment', () => {
     );
 
     //verify comment
-    const articleComment = articlePage.getArticleComment(commentText);
+    const articleComment = articlePage.getArticleComment(newCommentData.body);
 
-    await expect(articleComment.body).toHaveText(commentText);
+    await expect(articleComment.body).toHaveText(newCommentData.body);
     await articleComment.link.click();
     //arrange
 
-    await expect(commentPage.commentBody).toHaveText(commentText);
+    await expect(commentPage.commentBody).toHaveText(newCommentData.body);
   });
 });
