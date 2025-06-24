@@ -87,5 +87,19 @@ test.describe('Create,verify and delete comment', () => {
       );
       await expect(updatedArticleComment.body).toHaveText(editCommentData.body);
     });
+    await test.step('create and verify second comment', async () => {
+      //arrange
+      const secondCommentData = prepareRandomComment();
+
+      //act
+      await articlePage.addCommentButton.click();
+      await addCommentView.createComment(secondCommentData);
+
+      //assert
+      const articleComment = articlePage.getArticleComment(
+        secondCommentData.body,
+      );
+      await expect(articleComment.body).toHaveText(secondCommentData.body);
+    });
   });
 });
