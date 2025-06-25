@@ -102,4 +102,45 @@ test.describe('Create,verify and delete comment', () => {
       await expect(articleComment.body).toHaveText(secondCommentData.body);
     });
   });
+  test(
+    'user can add more than one comment to article',
+    { tag: '@GAD-R05-01' },
+    async () => {
+      await test.step('create first comment', async () => {
+        //arrange
+        const newCommentData = prepareRandomComment();
+
+        const expectedCommentCreatedPopup = 'Comment was created';
+        //act
+        await articlePage.addCommentButton.click();
+
+        await addCommentView.createComment(newCommentData);
+        //assert
+        await expect
+          .soft(articlePage.alertPopup)
+          .toHaveText(expectedCommentCreatedPopup);
+      });
+      await test.step('create and verify second comment', async () => {
+        const secondCommentData = prepareRandomComment();
+        const secondCommentBody =
+          await test.step('create second comment', async () => {
+            //arrange
+
+            //act
+            await articlePage.addCommentButton.click();
+            await addCommentView.createComment(secondCommentData);
+            return secondCommentData.body;
+          });
+
+        //assert
+        await test.step('verify comment', async () => {
+          const articleComment =
+            articlePage.getArticleComment(secondCommentBody);
+          await expect(articleComment.body).toHaveText(secondCommentBody);
+          await articleComment.link.click();
+          await expect(commentPage.commentBody).toHaveText(secondCommentBody);
+        });
+      });
+    },
+  );
 });
