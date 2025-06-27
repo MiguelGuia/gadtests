@@ -21,20 +21,24 @@ test.describe('Verify articles', () => {
     await articlesPage.goto();
     await articlesPage.addArticleButtonLogged.click();
   });
-  test('create new article', { tag: '@GAD-R04-01' }, async ({ page }) => {
-    //arrange
-    const articlePage = new ArticlePage(page);
-    const articleData = prepareRandomArticle();
+  test(
+    'create new article',
+    { tag: ['@GAD-R04-01', '@logged'] },
+    async ({ page }) => {
+      //arrange
+      const articlePage = new ArticlePage(page);
+      const articleData = prepareRandomArticle();
 
-    // Act
-    await addArticleView.createArticle(articleData);
+      // Act
+      await addArticleView.createArticle(articleData);
 
-    // Assert
-    await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
-    await expect
-      .soft(articlePage.articleBody)
-      .toHaveText(articleData.body, { useInnerText: true });
-  });
+      // Assert
+      await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
+      await expect
+        .soft(articlePage.articleBody)
+        .toHaveText(articleData.body, { useInnerText: true });
+    },
+  );
   test(
     'reject creating article without title',
     { tag: '@GAD-R04-01' },
