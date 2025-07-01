@@ -1,4 +1,4 @@
-import { USER_EMAIL } from '../env.config';
+import { USER_EMAIL } from '../../config/env.config';
 import { LoginUserModel } from '@_src/models/user.model';
 
 export const testUser1: LoginUserModel = {
