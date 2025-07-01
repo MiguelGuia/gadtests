@@ -1,4 +1,4 @@
-import { AddArticle } from '../models/article.model';
+import { AddArticle } from '@_src/models/article.model';
 import { faker } from '@faker-js/faker/locale/en';
 
 export function prepareRandomArticle(

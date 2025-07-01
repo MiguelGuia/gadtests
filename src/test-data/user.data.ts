@@ -1,5 +1,5 @@
 import { USER_EMAIL } from '../env.config';
-import { LoginUserModel } from '../models/user.model';
+import { LoginUserModel } from '@_src/models/user.model';
 
 export const testUser1: LoginUserModel = {
   userEmail: USER_EMAIL ?? '[NOT SET]',

@@ -1,5 +1,5 @@
-import { AddCommentModel } from '../models/comment.model';
 import { BasePage } from '../pages/base.page';
+import { AddCommentModel } from '@_src/models/comment.model';
 import { Locator, Page } from '@playwright/test';
 
 export class AddCommentView extends BasePage {

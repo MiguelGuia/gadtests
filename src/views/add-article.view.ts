@@ -1,5 +1,5 @@
-import { AddArticle } from '../models/article.model';
 import { BasePage } from '../pages/base.page';
+import { AddArticle } from '@_src/models/article.model';
 import { Locator, Page } from '@playwright/test';
 
 export class AddArticleView extends BasePage {
