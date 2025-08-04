@@ -13,14 +13,17 @@ export class MainMenuComponent {
     this.articlesButton = this.page.getByTestId('open-articles');
     this.homePageLink = this.page.getByRole('link', { name: '🦎 GAD' });
   }
+
   async clickCommentsButton(): Promise<CommentsPage> {
     await this.commentsButton.click();
     return new CommentsPage(this.page);
   }
+
   async clickArticlesButton(): Promise<ArticlesPage> {
     await this.articlesButton.click();
     return new ArticlesPage(this.page);
   }
+
   async clickHomePageLink(): Promise<HomePage> {
     await this.homePageLink.click();
     return new HomePage(this.page);

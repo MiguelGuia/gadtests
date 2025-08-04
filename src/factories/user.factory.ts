@@ -8,9 +8,11 @@ export function prepareRandomUser(): RegisterUserModel {
     userEmail: '',
     userPassword: faker.internet.password(),
   };
+
   registerUserData.userEmail = faker.internet.email({
     firstName: registerUserData.userFirstName,
     lastName: registerUserData.userLastName,
   });
+
   return registerUserData;
 }

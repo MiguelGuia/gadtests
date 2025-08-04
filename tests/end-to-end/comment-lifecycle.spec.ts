@@ -1,140 +1,119 @@
 import { prepareRandomArticle } from '@_src/factories/article.factory';
 import { prepareRandomComment } from '@_src/factories/comment.factory';
-import { AddArticle } from '@_src/models/article.model';
+import { AddArticleModel } from '@_src/models/article.model';
+import { AddCommentModel } from '@_src/models/comment.model';
 import { ArticlePage } from '@_src/pages/article.page';
 import { ArticlesPage } from '@_src/pages/articles.page';
-import { CommentPage } from '@_src/pages/comment.page';
-import { AddArticleView } from '@_src/views/add-article.view';
-import { AddCommentView } from '@_src/views/add-comment.view';
-import { EditCommentView } from '@_src/views/edit-comment.view';
-import test, { expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
-test.describe('Create,verify and delete comment', () => {
-  let articlesPage: ArticlesPage;
-  let addArticleView: AddArticleView;
-  let articleData: AddArticle;
+test.describe('Create, verify and delete comment', () => {
+  let articleData: AddArticleModel;
   let articlePage: ArticlePage;
-  let addCommentView: AddCommentView;
-  let commentPage: CommentPage;
-  let editCommentView: EditCommentView;
 
   test.beforeEach(async ({ page }) => {
-    articlesPage = new ArticlesPage(page);
-    addArticleView = new AddArticleView(page);
-    articlePage = new ArticlePage(page);
+    const articlesPage = new ArticlesPage(page);
     articleData = prepareRandomArticle();
-    addCommentView = new AddCommentView(page);
-    commentPage = new CommentPage(page);
-    editCommentView = new EditCommentView(page);
 
     await articlesPage.goto();
-    await articlesPage.addArticleButtonLogged.click();
-    await addArticleView.createArticle(articleData);
+    const addArticleView = await articlesPage.clickAddArticleButtonLogged();
+    articlePage = await addArticleView.createArticle(articleData);
   });
-  test('operate on comments', { tag: ['@GAD-R05-01', '@logged'] }, async () => {
-    //arrange
+
+  test('operate on comments @GAD-R05-01 @GAD-R05-02 @logged', async () => {
     const newCommentData = prepareRandomComment();
 
     await test.step('create new comment', async () => {
-      //arrange
+      // Arrange
       const expectedCommentCreatedPopup = 'Comment was created';
       const expectedAddCommentHeader = 'Add New Comment';
-      //act
-      await articlePage.addCommentButton.click();
+
+      // Act
+      const addCommentView = await articlePage.clickAddCommentButton();
       await expect
         .soft(addCommentView.addNewHeader)
         .toHaveText(expectedAddCommentHeader);
 
-      await addCommentView.createComment(newCommentData);
-      //assert
+      articlePage = await addCommentView.createComment(newCommentData);
+
+      // Assert
       await expect
         .soft(articlePage.alertPopup)
         .toHaveText(expectedCommentCreatedPopup);
     });
 
-    await test.step('verify comment', async () => {
+    let commentPage = await test.step('verify comment', async () => {
+      // Act
       const articleComment = articlePage.getArticleComment(newCommentData.body);
       await expect(articleComment.body).toHaveText(newCommentData.body);
-      await articleComment.link.click();
 
+      const commentPage = await articlePage.clickCommentLink(articleComment);
+
+      // Assert
       await expect(commentPage.commentBody).toHaveText(newCommentData.body);
+
+      return commentPage;
     });
 
-    const editCommentData = prepareRandomComment();
+    let editCommentData: AddCommentModel;
     await test.step('update comment', async () => {
-      //arrange
-      const expectedCommentUpdatedPopup = 'Comment was updated';
+      // Arrange
+      const expectedCommentUpdatePopup = 'Comment was updated';
 
-      //act
-      await commentPage.editButton.click();
-      await editCommentView.updateComment(editCommentData);
+      editCommentData = prepareRandomComment();
+
+      // Act
+      const editCommentView = await commentPage.clickEditButton();
+      commentPage = await editCommentView.updateComment(editCommentData);
+
+      // Assert
       await expect
         .soft(commentPage.alertPopup)
-        .toHaveText(expectedCommentUpdatedPopup);
+        .toHaveText(expectedCommentUpdatePopup);
       await expect(commentPage.commentBody).toHaveText(editCommentData.body);
     });
-    await test.step('verify updated comment', async () => {
-      //act
-      await commentPage.returnLink.click();
+
+    await test.step('verify updated comment in article page', async () => {
+      // Act
+      const articlePage = await commentPage.clickReturnLink();
       const updatedArticleComment = articlePage.getArticleComment(
         editCommentData.body,
       );
+
+      // Assert
       await expect(updatedArticleComment.body).toHaveText(editCommentData.body);
     });
+  });
+
+  test('user can add more than one comment to article @GAD-R05-03 @logged', async () => {
+    await test.step('create first comment', async () => {
+      // Arrange
+      const expectedCommentCreatedPopup = 'Comment was created';
+      const newCommentData = prepareRandomComment();
+
+      // Act
+      const addCommentView = await articlePage.clickAddCommentButton();
+      articlePage = await addCommentView.createComment(newCommentData);
+
+      // Assert
+      await expect
+        .soft(articlePage.alertPopup)
+        .toHaveText(expectedCommentCreatedPopup);
+    });
+
     await test.step('create and verify second comment', async () => {
-      //arrange
-      const secondCommentData = prepareRandomComment();
+      const secondCommentBody = await test.step('create comment', async () => {
+        const secondCommentData = prepareRandomComment();
+        const addCommentView = await articlePage.clickAddCommentButton();
+        articlePage = await addCommentView.createComment(secondCommentData);
+        return secondCommentData.body;
+      });
 
-      //act
-      await articlePage.addCommentButton.click();
-      await addCommentView.createComment(secondCommentData);
-
-      //assert
-      const articleComment = articlePage.getArticleComment(
-        secondCommentData.body,
-      );
-      await expect(articleComment.body).toHaveText(secondCommentData.body);
+      await test.step('verify comment', async () => {
+        const articleComment = articlePage.getArticleComment(secondCommentBody);
+        await expect(articleComment.body).toHaveText(secondCommentBody);
+        const commentPage = await articlePage.clickCommentLink(articleComment);
+        await expect(commentPage.commentBody).toHaveText(secondCommentBody);
+      });
     });
   });
-  test(
-    'user can add more than one comment to article',
-    { tag: ['@GAD-R05-01', '@logged'] },
-    async () => {
-      await test.step('create first comment', async () => {
-        //arrange
-        const newCommentData = prepareRandomComment();
-
-        const expectedCommentCreatedPopup = 'Comment was created';
-        //act
-        await articlePage.addCommentButton.click();
-
-        await addCommentView.createComment(newCommentData);
-        //assert
-        await expect
-          .soft(articlePage.alertPopup)
-          .toHaveText(expectedCommentCreatedPopup);
-      });
-      await test.step('create and verify second comment', async () => {
-        const secondCommentData = prepareRandomComment();
-        const secondCommentBody =
-          await test.step('create second comment', async () => {
-            //arrange
-
-            //act
-            await articlePage.addCommentButton.click();
-            await addCommentView.createComment(secondCommentData);
-            return secondCommentData.body;
-          });
-
-        //assert
-        await test.step('verify comment', async () => {
-          const articleComment =
-            articlePage.getArticleComment(secondCommentBody);
-          await expect(articleComment.body).toHaveText(secondCommentBody);
-          await articleComment.link.click();
-          await expect(commentPage.commentBody).toHaveText(secondCommentBody);
-        });
-      });
-    },
-  );
 });
