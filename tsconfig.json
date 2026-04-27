@@ -6,6 +6,7 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
       "@_src/*": ["src/*"],
       "@_pw-config": ["playwright.config.ts"],
